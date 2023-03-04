@@ -71,134 +71,6 @@ def output_role_predictions(model, batches, output_file):
     with open(output_file, 'w') as f:
         f.write('\n'.join(json.dumps(sample) for batch in batches for sample in batch))
 
-# def evaluate(model, batches, use_gold=True):
-#     logger.info('Evaluating...')
-#     c_time = time.time()
-    
-#     cor_loosely = 0
-#     tot_gold_loosely = 0
-#     tot_pred_loosely = 0
-#     l_cor_loosely = 0
-    
-#     cor_strict = 0
-#     tot_gold_strict = 0
-#     tot_pred_strict = 0
-#     l_cor_strict = 0
-    
-#     l_tot = 0
-    
-#     cor_role_loosely = dict.fromkeys(range(6), 0)
-#     tot_gold_role_loosely = dict.fromkeys(range(6), 0)
-#     tot_pred_role_loosely = dict.fromkeys(range(6), 0)
-#     l_cor_role_loosely = dict.fromkeys(range(6), 0)
-#     l_tot_role_loosely = dict.fromkeys(range(6), 0)
-    
-#     cor_role_strict = dict.fromkeys(range(6), 0)
-#     tot_gold_role_strict = dict.fromkeys(range(6), 0)
-#     tot_pred_role_strict = dict.fromkeys(range(6), 0)
-#     l_cor_role_strict = dict.fromkeys(range(6), 0)
-#     l_tot_role_strict = dict.fromkeys(range(6), 0)
-    
-#     for i in range(len(batches)):
-#         output_dict = model.run_batch(batches[i], use_gold=use_gold, training=False)    # when eval on dev set, wheather to use gold.
-#         pred_role = output_dict['pred_role']
-#         if use_gold:    # when using gold, span and ner must be correct
-#             for sample, preds in zip(batches[i], pred_role):
-#                 for gold_ner, gold_role, pred_ner, p_role in zip(sample['spans_ner_label'], sample['spans_role_label'], sample['pred_spans_ner_label'], preds):
-#                     l_tot += 1
-#                     if p_role == gold_role:
-#                         l_cor_loosely += 1
-#                         l_cor_role_loosely[p_role] += 1
-#                     if gold_role != 0:
-#                         tot_gold_loosely += 1
-#                         tot_gold_role_loosely[gold_role] += 1
-#                     if pred_role != 0 and gold_role != 0 and p_role == gold_role:
-#                         cor_loosely += 1
-#                         cor_role_loosely[p_role] += 1
-#                     if p_role != 0:
-#                         tot_pred_loosely += 1
-#                         tot_pred_role_loosely[p_role] += 1
-
-#                     if pred_ner == gold_ner:    # ner is also correct
-#                         if p_role == gold_role:
-#                             l_cor_strict += 1
-#                             l_cor_role_strict[p_role] += 1
-#                         if gold_role != 0:
-#                             tot_gold_strict += 1
-#                             tot_gold_role_strict[gold_role] += 1
-#                         if p_role != 0 and gold_role != 0 and p_role == gold_role:
-#                             cor_strict += 1
-#                             cor_role_strict[p_role] += 1
-#                         if p_role != 0:
-#                             tot_pred_strict += 1
-#                             tot_pred_role_strict[p_role] += 1
-#         else:
-#             for sample, preds in zip(batches[i], pred_role):
-#                 for i, pred_span in enumerate(sample['pred_spans']):
-#                     l_tot += 1
-#                     if pred_span in sample['spans']:    # pred span correct
-#                         j = sample['spans'].index(pred_span)
-#                         gold_role = sample['spans_role_label'][j]
-#                         gold_ner = sample['spans_ner_label'][j]
-#                         p_role = preds[i]
-#                         pred_ner = sample['pred_spans_ner_label'][i]
-#                         if p_role == gold_role:
-#                             l_cor_loosely += 1
-#                             l_cor_role_loosely[p_role] += 1
-#                         if gold_role != 0:
-#                             tot_gold_loosely += 1
-#                             tot_gold_role_loosely[gold_role] += 1
-# #                             tot_gold_role[gold_role] += 1
-#                         if p_role != 0 and gold_role != 0 and p_role == gold_role:
-#                             cor_loosely += 1
-#                             cor_role_loosely[p_role] += 1
-#                         if p_role != 0:
-#                             tot_pred_loosely += 1
-#                             tot_pred_role_loosely[p_role] += 1
-
-#                         if pred_ner == gold_ner:    # ner is also correct
-#                             if p_role == gold_role:
-#                                 l_cor_strict += 1
-#                                 l_cor_role_strict[p_role] += 1
-#                             if gold_role != 0:
-#                                 tot_gold_strict += 1
-#                                 tot_gold_role_strict[gold_role] += 1
-#                             if p_role != 0 and gold_role != 0 and p_role == gold_role:
-#                                 cor_strict += 1
-#                                 cor_role_strict[p_role] += 1
-#                             if p_role != 0:
-#                                 tot_pred_strict += 1
-#                                 tot_pred_role_strict[p_role] += 1
-                            
-#     acc_loosely = l_cor_loosely / l_tot
-#     acc_strict = l_cor_strict / l_tot
-#     logger.info('Accuracy: loosely %5f, strict %5f'%(acc_loosely, acc_strict))
-#     logger.info('loosely Cor: %d, Pred TOT: %d, Gold TOT: %d'%(cor_loosely, tot_pred_loosely, tot_gold_loosely))
-#     logger.info('strict Cor: %d, Pred TOT: %d, Gold TOT: %d'%(cor_strict, tot_pred_strict, tot_gold_strict))
-    
-#     p_loosely = cor_loosely / tot_pred_loosely if cor_loosely > 0 else 0.0
-#     r_loosely = cor_loosely / tot_gold_loosely if cor_loosely > 0 else 0.0
-#     f1_loosely = 2 * (p_loosely * r_loosely) / (p_loosely + r_loosely) if cor_loosely > 0 else 0.0
-    
-#     p_strict = cor_strict / tot_pred_strict if cor_strict > 0 else 0.0
-#     r_strict = cor_strict / tot_gold_strict if cor_strict > 0 else 0.0
-#     f1_strict = 2 * (p_strict * r_strict) / (p_strict + r_strict) if cor_strict > 0 else 0.0
-#     logger.info('loosely P: %.5f, R: %.5f, F1: %.5f'%(p_loosely, r_loosely, f1_loosely))
-#     logger.info('strict P: %.5f, R: %.5f, F1: %.5f'%(p_strict, r_strict, f1_strict))
-    
-#     for idx in range(1, len(role_labels)):
-#         p_loosely = cor_role_loosely[idx] / tot_pred_role_loosely[idx] if cor_role_loosely[idx] > 0 else 0.0
-#         r_loosely = cor_role_loosely[idx] / tot_gold_role_loosely[idx] if cor_role_loosely[idx] > 0 else 0.0
-#         f1_loosely = 2 * (p_loosely * r_loosely) / (p_loosely + r_loosely) if cor_role_loosely[idx] > 0 else 0.0
-#         logger.info('loosely %s P: %.5f, R: %.5f, F1: %.5f, Cor: %d, Pred TOT: %d, Gold TOT: %d'%(role_labels[idx], p_loosely, r_loosely, f1_loosely, cor_role_loosely[idx], tot_pred_role_loosely[idx], tot_gold_role_loosely[idx]))
-        
-#         p_strict = cor_role_strict[idx] / tot_pred_role_strict[idx] if cor_role_strict[idx] > 0 else 0.0
-#         r_strict = cor_role_strict[idx] / tot_gold_role_strict[idx] if cor_role_strict[idx] > 0 else 0.0
-#         f1_strict = 2 * (p_strict * r_strict) / (p_strict + r_strict) if cor_role_strict[idx] > 0 else 0.0
-#         logger.info('strict %s P: %.5f, R: %.5f, F1: %.5f, Cor: %d, Pred TOT: %d, Gold TOT: %d'%(role_labels[idx], p_strict, r_strict, f1_strict, cor_role_strict[idx], tot_pred_role_strict[idx], tot_gold_role_strict[idx]))
-#     logger.info('Used time: %f'%(time.time()-c_time))
-#     return f1_strict
-
 def evaluate(model, batches, use_gold=True):
     logger.info('Evaluating...')
     c_time = time.time()
@@ -311,23 +183,12 @@ def evaluate(model, batches, use_gold=True):
 
 
 if __name__ == '__main__':
-#     data_dir = '/root/test_paper_dataset_full/'
-    data_dir = '/root/paper_dataset_full/'
-#     output_dir = '/root/test_PubMed_predict_role/'
-    output_dir = '/root/PubMed_predict_role/'
-    model_path = '/root/autodl-nas/PubMedBERT/'
-#     model_path = '/root/autodl-nas/scibert/'
-#     model_save_path = '/root/test_PubMed_model_saved_role/'
-    model_save_path = '/root/PubMed_model_saved_role/'
+    data_dir = '/your/dataset/'
+    output_dir = '/your/output_dir/'
+    model_path = '/your/model/path/'
+    model_save_path = '/your/model_save_path/'
     test_pred_filename = 'test_predict_role.json'
     dev_pred_filename = 'dev_predict_role.json'
-    
-#     data_dir = '/root/paper_test_dataset/'
-#     output_dir = '/root/test_predict/'
-#     model_path = '/root/autodl-nas/PubMedBERT/'
-#     model_save_path = '/root/test_model_saved/'
-#     test_pred_filename = 'test_predict.json'
-#     dev_pred_filename = 'dev_predict.json'
     
     eval_batch_size = 16
     train_batch_size = 16
@@ -338,19 +199,15 @@ if __name__ == '__main__':
     eval_per_epoch = 2
     train_shuffle = True
     print_loss_step = 300
-#     print_loss_step = 30
     max_span_length = 12
     use_gold = True
-#     do_train = True
-    do_train = False
+    do_train = True
     do_eval = True
     eval_test = True
     
     train_data = os.path.join(data_dir, 'train.json')
     dev_data = os.path.join(data_dir, 'dev.json')
-#     test_data = os.path.join(data_dir, 'test.json')
-#     test_data = '/root/test_predict_full/test_predict_ner.json'
-    test_data = '/root/predict_full/test_predict_ner.json'
+    test_data = '/your/path/to/test_predict_ner.json'
 
     setseed(37)
 
@@ -368,8 +225,8 @@ if __name__ == '__main__':
     num_role_labels = len(role_labels)
     model = RoleModel(model_path, num_role_labels=num_role_labels)
 
-#     dev_samples = convert_dataset_to_samples_sent_level(dev_data, use_gold=use_gold, ner_label2id=ner_label2id,  role_label2id=role_label2id)
-#     dev_batches = batchify(dev_samples, eval_batch_size)
+    dev_samples = convert_dataset_to_samples_sent_level(dev_data, use_gold=use_gold, ner_label2id=ner_label2id,  role_label2id=role_label2id)
+    dev_batches = batchify(dev_samples, eval_batch_size)
 
     if do_train:
         train_samples = convert_dataset_to_samples_sent_level(train_data,  use_gold=use_gold, ner_label2id=ner_label2id,  role_label2id=role_label2id)
@@ -417,14 +274,6 @@ if __name__ == '__main__':
                         best_result = f1
                         logger.info('!!! Best valid (epoch=%d): %.2f' % (_, f1*100))
                         save_model(model, model_save_path)
-        
-        # test after train
-#         use_gold = False
-#         prediction_file = '/root/test_predict_role.json'
-#         test_samples = convert_dataset_to_samples_sent_level(test_data,  use_gold=use_gold, ner_label2id=ner_label2id, role_label2id=role_label2id)
-#         test_batches = batchify(test_samples, eval_batch_size)
-#         evaluate(model, test_batches, use_gold=use_gold)
-#         output_role_predictions(model, test_batches, output_file=prediction_file)
 
     if do_eval:
         model = RoleModel(model_save_path, num_role_labels=num_role_labels)
@@ -438,4 +287,4 @@ if __name__ == '__main__':
         test_samples = convert_dataset_to_samples_sent_level(test_data,  use_gold=use_gold, ner_label2id=ner_label2id, role_label2id=role_label2id)
         test_batches = batchify(test_samples, eval_batch_size)
         evaluate(model, test_batches, use_gold=use_gold)
-#         output_role_predictions(model, test_batches, output_file=prediction_file)
+        output_role_predictions(model, test_batches, output_file=prediction_file)
