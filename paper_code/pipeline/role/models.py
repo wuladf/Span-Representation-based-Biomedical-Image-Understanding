@@ -16,8 +16,6 @@ import json
 import logging
 
 logger = logging.getLogger('root')
-# role_labels = ['component', 'intervention','assayed','reporter', 'experiment','normalizing']
-# label2id = {label:id for id,label in enumerate(role_labels)}
 
 class BertForRole(BertPreTrainedModel):
     def __init__(self, config, num_role_labels=6, head_hidden_dim=150, width_embedding_dim=150, max_span_length=12):
@@ -145,21 +143,18 @@ class RoleModel():
         max_tokens = 0
         max_spans = 0
         for sample in samples_list:
-#             logger.info(sample)
             tokens = sample['tokens']
             spans = sample['spans']
             spans_role_label = sample['spans_role_label']
             if not use_gold:
                 spans = sample['pred_spans']
-                # since we need to predict the role label, we can set it to arbitary value
+                # since we need to predict the role label, we can set it to arbitary value, here simply 0
                 spans_role_label = [0] * len(spans)    
 
             tokens_tensor, bert_spans_tensor, spans_role_label_tensor = self._get_input_tensors(tokens, spans, spans_role_label)
             tokens_tensor_list.append(tokens_tensor)
             bert_spans_tensor_list.append(bert_spans_tensor)
             spans_role_label_tensor_list.append(spans_role_label_tensor)
-#             logger.info(bert_spans_tensor)
-#             logger.info(spans_role_label_tensor)
             assert(bert_spans_tensor.shape[1] == spans_role_label_tensor.shape[1])
             if (tokens_tensor.shape[1] > max_tokens):
                 max_tokens = tokens_tensor.shape[1]
@@ -248,8 +243,6 @@ class RoleModel():
                     attention_mask = attention_mask_tensor.to(self._model_device),
                 )
             _, predicted_label = role_logits.max(2)
-#             logger.info(predicted_label)
-#             logger.info(samples_list)
             predicted_label = predicted_label.cpu().numpy()
             last_hidden = last_hidden.cpu().numpy()
             
