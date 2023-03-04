@@ -1,1 +1,1 @@
-# SpanPubMedBert-based-Biomedical-Image-Understanding
+# SpanPubMedBert based Biomedical Image Understanding
