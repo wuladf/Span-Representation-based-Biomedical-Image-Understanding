@@ -9,7 +9,6 @@ from tqdm import tqdm
 import numpy as np
 
 from shared.const import ner_labels, role_labels, get_labelmap
-# from entity.utils import convert_dataset_to_samples_sent_level, convert_dataset_to_samples_panel_level,batchify
 from entity.utils_full import convert_dataset_to_samples_sent_level,batchify
 from entity.models import EntityModel
 
@@ -29,39 +28,6 @@ def save_model(model, model_save_path):
     model_to_save = model.bert_model.module if hasattr(model.bert_model, 'module') else model.bert_model
     model_to_save.save_pretrained(model_save_path)
     model.tokenizer.save_pretrained(model_save_path)
-
-# def output_ner_predictions(model, batches, output_file):
-#     """
-#     Save the prediction as a json file
-#     """
-#     for i in range(len(batches)):
-#         output_dict = model.run_batch(batches[i], training=False)
-#         pred_ner = output_dict['pred_ner']
-#         for sample, preds in zip(batches[i], pred_ner):
-#             sample['pred_ner'] = []
-#             for span, pred in zip(sample['spans'], preds):
-#                 if pred == 0:
-#                     continue
-#                 sample['pred_ner'].append((span[0], span[1], ner_id2label[pred]))
-            
-#             spans = []
-#             spans_ner_label = []
-#             spans_role_label = []
-#             for span, span_ner_label, span_role_label in zip(sample['spans'], sample['spans_ner_label'], sample['spans_role_label']):
-#                 if span_ner_label != 0:
-#                     mention = sample['tokens'][span[0]:span[1]+1]
-#                     mention = ' '.join(token for token in mention)
-# #                     spans.append(span)
-#                     spans.append([span[0], span[1], ner_id2label[span_ner_label], mention])
-#                     spans_ner_label.append(ner_id2label[span_ner_label])
-#                     spans_role_label.append(span_role_label)
-#             sample['spans'] = spans
-#             sample['spans_ner_label'] = spans_ner_label
-#             sample['spans_role_label'] = spans_role_label
-            
-#     logger.info('Output predictions to %s..'%(output_file))
-#     with open(output_file, 'w') as f:
-#         f.write('\n'.join(json.dumps(sample) for batch in batches for sample in batch))
 
 def output_ner_predictions(model, batches, output_file):
     """
@@ -85,18 +51,12 @@ def output_ner_predictions(model, batches, output_file):
             
             spans = []
             spans_ner_label = []
-#             spans_role_label = []
             for span, span_ner_label in zip(sample['spans'], sample['spans_ner_label']):
                 if span_ner_label != 0:
-#                     mention = sample['tokens'][span[0]:span[1]+1]
-#                     mention = ' '.join(token for token in mention)
-#                     spans.append(span)
                     spans.append([span[0], span[1]])
                     spans_ner_label.append(ner_id2label[span_ner_label])
-#                     spans_role_label.append(span_role_label)
             sample['spans'] = spans
             sample['spans_ner_label'] = spans_ner_label
-#             sample['spans_role_label'] = spans_role_label
             sample['spans_role_label'] = [role_id2label[span_role_label] for span_role_label in sample['spans_role_label']]
             
     logger.info('Output predictions to %s..'%(output_file))
@@ -162,36 +122,14 @@ def setseed(seed):
         torch.cuda.manual_seed_all(seed)
 
 if __name__ == '__main__':
-    models_path = '/root/autodl-nas/'
+    models_path = '/your/model/path/'
     for model_name in os.listdir(models_path):
-        used_list = {'.ipynb_checkpoints','scibert', 'biobert'}
-        if model_name in used_list:
-            continue
         model_path = os.path.join(models_path, model_name)
-#         output_dir = '/root/predict/' + 'panel_' + model_name
-#         model_save_path = '/root/model_saved/' + 'panel_' + model_name
-#         data_dir = '/root/paper_dataset/'
-    #     output_dir = '/root/predict/'
-    #     model_path = '/root/autodl-nas/PubMedBERT/'
-    #     model_path = '/root/autodl-nas/scibert/'
-    #     model_path = '/root/autodl-nas/biobert/'
-    #     model_save_path = '/root/model_saved/'
-#         data_dir = '/root/test_paper_dataset_full/'
-#         output_dir = '/root/test_predict_full/'
-        data_dir = '/root/paper_dataset_full/'
-        output_dir = '/root/predict_full/'
-        model_save_path = '/root/PubMed_model_saved/'
-#         test_pred_filename = 'test_predict.json'
-#         dev_pred_filename = 'dev_predict.json'
+        data_dir = '/your/dataset/'
+        output_dir = '/your/output/'
+        model_save_path = '/your/model/save_path/'
         test_pred_filename = 'test_predict_ner.json'
         dev_pred_filename = 'dev_predict_ner.json'
-
-#         data_dir = '/root/paper_test_dataset/'
-    #     output_dir = '/root/test_predict/'
-    #     model_path = '/root/autodl-nas/PubMedBERT/'
-    #     model_save_path = '/root/test_model_saved/'
-    #     test_pred_filename = 'test_predict.json'
-    #     dev_pred_filename = 'dev_predict.json'
 
         eval_batch_size = 16
         train_batch_size = 16
@@ -201,11 +139,9 @@ if __name__ == '__main__':
         warmup_proportion = 0.1
         eval_per_epoch = 2
         train_shuffle = True
-#         print_loss_step = 300
-        print_loss_step = 30
+        print_loss_step = 300
         max_span_length = 8
-#         do_train = True
-        do_train = False
+        do_train = True
         do_eval = True
         eval_test = True
 
