@@ -32,7 +32,7 @@ def batchify(samples, batch_size):
 
 def convert_dataset_to_samples_sent_level(dataset_file, use_gold=True, ner_label2id=None, role_label2id=None):
     f_r = open(dataset_file, 'r', encoding='utf8')
-    tokenizer = BertTokenizer.from_pretrained('/root/autodl-nas/PubMedBERT/')
+    tokenizer = BertTokenizer.from_pretrained('/your/model/path/')
     samples = []
     if use_gold:    # train or evaluate, the dataset file is train.json or dev.json file
         for line in f_r:
@@ -64,9 +64,6 @@ def convert_dataset_to_samples_sent_level(dataset_file, use_gold=True, ner_label
                 
                 # if the sentence contains no ner
                 if not sample['spans']:
-#                     sample['spans'].append((0,0,1))
-#                     sample['spans_ner_label'].append(0)
-#                     sample['spans_role_label'].append(0)
                     continue
                 
                 # use gold means pred_spans and pred_spans_ner_label are the same with...
@@ -105,18 +102,12 @@ def convert_dataset_to_samples_sent_level(dataset_file, use_gold=True, ner_label
             sample['pred_spans_ner_label'] = pred_spans_ner_label
             
             if not sample['pred_spans']:
-#                 sample['spans'].append((0,0,1))
-#                 sample['spans_ner_label'].append(0)
-#                 sample['spans_role_label'].append(0)
-#                 sample['pred_spans'].append((0,0,1))
-#                 sample['pred_spans_ner_label'].append(0)
                 continue
             
             if sample['tokens']:
                 tokenized = tokenizer(sample['tokens'], is_split_into_words=True)
                 if len(tokenized.input_ids) < 510:
                     samples.append(sample)
-#             samples.append(sample)
     
     avg_length = sum([len(sample['tokens']) for sample in samples]) / len(samples)
     max_length = max([len(sample['tokens']) for sample in samples])
