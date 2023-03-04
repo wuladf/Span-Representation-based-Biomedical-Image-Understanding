@@ -26,4 +26,4 @@ strict means both span and ner are correct, loosely means span correct only.
 ### To-Do
 For more results and the result analysis，read my paper(link later).  
 
-This is the fist writing of ReadMe.  
+I will write this ReadMe in more detail in later days.
