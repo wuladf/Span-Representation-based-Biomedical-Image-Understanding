@@ -12,7 +12,9 @@ The figure context mainly consists of the figure caption and the figure's refere
 ### Methods
 For both tasks, we implement SpanPubMedBert， which is a combination of SpanBert and PubMedBert. We first recognize the entities in figure caption and then classify the recognized entity roles, that is, pipelineing.  
 
-We also implement a multitask-SpanPubMedBert(MtSpanPubMedBert) model, to alleviate the error accumulation in ner task. The code and result will upload in a few days.  
+We also implement a multitask-SpanPubMedBert(MtSpanPubMedBert) model, to alleviate the error accumulation in ner task. The code and result will upload in a few days.     
+
+We have uploaded the code of MTLSpanBert!
 
 ### Results
 Purely pipeline:  
