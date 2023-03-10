@@ -56,17 +56,12 @@ def output_predictions(model, batches, output_file):
             spans_ner_label = []
             spans_role_label = []
             for span_info in sample['spans_info']:
-#                 if span_ner_label != 0:
-#                     mention = sample['tokens'][span[0]:span[1]+1]
-#                     mention = ' '.join(token for token in mention)
-#                     spans.append(span)
                 spans.append([span_info[0], span_info[1]])
                 spans_ner_label.append(span_info[2])
                 spans_role_label.append(span_info[3])
             sample['spans'] = spans
             sample['spans_ner_label'] = spans_ner_label
             sample['spans_role_label'] = spans_role_label
-#             sample['spans_role_label'] = [role_id2label[span_role_label] for span_role_label in sample['spans_role_label']]
             
     logger.info('Output predictions to %s..'%(output_file))
     with open(output_file, 'w') as f:
@@ -195,39 +190,16 @@ def setseed(seed):
         torch.cuda.manual_seed_all(seed)
 
 if __name__ == '__main__':
-    models_path = '/root/autodl-nas/'
+    models_path = '/your/bert/path/'
     for model_name in os.listdir(models_path):
-        used_list = {'.ipynb_checkpoints','scibert', 'biobert'}
         if model_name in used_list:
             continue
         model_path = os.path.join(models_path, model_name)
-#         output_dir = '/root/predict/' + 'panel_' + model_name
-#         model_save_path = '/root/model_saved/' + 'panel_' + model_name
-#         data_dir = '/root/paper_dataset/'
-    #     output_dir = '/root/predict/'
-    #     model_path = '/root/autodl-nas/PubMedBERT/'
-    #     model_path = '/root/autodl-nas/scibert/'
-    #     model_path = '/root/autodl-nas/biobert/'
-    #     model_save_path = '/root/model_saved/'
-#         data_dir = '/root/test_paper_dataset_full/'
-#         output_dir = '/root/test_predict_multitask/'
-        data_dir = '/root/paper_dataset_full/'
-        output_dir = '/root/multitask_predict/'
-        model_save_path = '/root/multitask_PubMed_model_saved/'
-#         test_pred_filename = 'test_predict.json'
-#         dev_pred_filename = 'dev_predict.json'
-#         test_pred_filename = 'test_predict_ner.json'
-#         dev_pred_filename = 'dev_predict_ner.json'
+        data_dir = '/your/dataset/'
+        output_dir = '/your/output/'
+        model_save_path = '/your/multitask_model_saved/'
         test_pred_filename = 'test_predict_multitask.json'
         dev_pred_filename = 'dev_predict_multitask.json'
-        
-
-#         data_dir = '/root/paper_test_dataset/'
-    #     output_dir = '/root/test_predict/'
-    #     model_path = '/root/autodl-nas/PubMedBERT/'
-    #     model_save_path = '/root/test_model_saved/'
-    #     test_pred_filename = 'test_predict.json'
-    #     dev_pred_filename = 'dev_predict.json'
 
         eval_batch_size = 16
         train_batch_size = 16
@@ -238,10 +210,8 @@ if __name__ == '__main__':
         eval_per_epoch = 2
         train_shuffle = True
         print_loss_step = 300
-#         print_loss_step = 30
         max_span_length = 8
         do_train = True
-#         do_train = False
         do_eval = True
         eval_test = True
 
@@ -319,11 +289,6 @@ if __name__ == '__main__':
                             best_result = f1
                             logger.info('!!! Best valid (epoch=%d): %.2f' % (_, f1*100))
                             save_model(model, model_save_path)
-                            
-#             test_samples = convert_dataset_to_samples_sent_level(test_data, max_span_length, ner_label2id=ner_label2id, role_label2id=role_label2id)
-#             test_batches = batchify(test_samples, eval_batch_size)
-#             evaluate(model, test_batches)
-#             output_predictions(model, test_batches, output_file=os.path.join(output_dir, test_pred_filename))
 
         if do_eval:
             model = MultiTaskModel(model_save_path, num_ner_labels=num_ner_labels, num_role_labels=num_role_labels)
