@@ -1,0 +1,6 @@
+allennlp==2.2.0
+nltk==3.7
+numpy==1.19.5
+scipy==1.9.3
+transformers==4.4.2
+torch==1.7.0+cu110
