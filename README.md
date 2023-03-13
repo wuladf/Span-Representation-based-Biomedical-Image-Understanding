@@ -1,4 +1,4 @@
-# SpanPubMedBert based Biomedical Image Understanding
+# SpanBERT based Biomedical Image Understanding
 ### Motivations
 We want to understand the text embedded in the biomedical figure to understand figure.   
 The text embedded in the figure is hard to recognize due to the lack of a unified figure standard, the different figure types(gel, bar, microscope, etc.), as well as the low figure quality.   
@@ -6,15 +6,13 @@ And even if we recognize the text correctly, we still don't know the meaning of 
 So it's necessary (of course insufficiency) to analyze the context of the figure to understand the figure text.   
 The figure context mainly consists of the figure caption and the figure's reference sentences in full text. So we have two tasks(ner and role):
 
-1. recognize the biomedical named entity(gene, protein, molecule, cell and etc.) in figure caption;
-2. classify the entity roles(assayed, intervention, reporter and etc.). For what is entity role and the detailed meaning of each entity role, you can read the supplementary material(4 pages).
+1. recognize the biomedical named entity(gene, protein, molecule, cell, etc.) in figure caption;
+2. classify the entity roles(assayed, intervention, reporter, etc.). For what is entity role and the detailed meaning of each entity role, you can read the supplementary material(4 pages).
 
 ### Methods
-For both tasks, we implement SpanPubMedBert， which is a combination of SpanBert and PubMedBert. We first recognize the entities in figure caption and then classify the recognized entity roles, that is, pipelineing.  
+For both tasks, we implement SpanPubMedBERT， which is a combination of SpanBERT and PubMedBERT. We first recognize the entities in figure caption and then classify the recognized entity roles, that is, pipelineing.  
 
-We also implement a multitask-SpanPubMedBert(MtSpanPubMedBert) model, to alleviate the error accumulation in ner task. The code and result will upload in a few days.     
-
-We have uploaded the code of MTLSpanBert!
+We also implement a multitask-SpanPubMedBERT(MtSpanPubMedBERT) model, to alleviate the error accumulation in ner task.   
 
 ### Results
 Purely pipeline:  
