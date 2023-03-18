@@ -1,4 +1,4 @@
-# SpanBERT based Biomedical Image Understanding
+# Span Representation based Biomedical Image Understanding
 ### Motivations
 We want to understand the text embedded in the biomedical figure to understand figure.   
 The text embedded in the figure is hard to recognize due to the lack of a unified figure standard, the different figure types(gel, bar, microscope, etc.), as well as the low figure quality.   
