@@ -10,9 +10,7 @@ The figure context mainly consists of the figure caption and the figure's refere
 2. classify the entity roles(assayed, intervention, reporter, etc.). For what is entity role and the detailed meaning of each entity role, you can read the supplementary material(4 pages).
 
 ### Methods
-For both tasks, we implement SpanPubMedBERT， which is a combination of SpanBERT and PubMedBERT. We first recognize the entities in figure caption and then classify the recognized entity roles, that is, pipelineing.  
-
-We also implement a multitask-SpanPubMedBERT(MtSpanPubMedBERT) model, to alleviate the error accumulation in ner task.   
+For both tasks, we implement span representation based PubMedBERT. We first recognize the entities in figure caption and then classify the recognized entity roles.     
 
 ### Results
 Purely pipeline:  
